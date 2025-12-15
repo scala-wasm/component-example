@@ -1,0 +1,16 @@
+target
+
+# metals
+.vscode
+.metals
+.bloop
+project/project/
+project/**/metals.sbt
+
+# Wasm and WIT deps
+*.wasm
+wit/deps
+
+# Rust
+bindings.rs
+
