@@ -36,6 +36,7 @@ fn main() -> wasmtime::Result<()> {
     let mut config = Config::default();
     config.wasm_function_references(true);
     config.wasm_gc(true);
+    config.wasm_exceptions(true);
 
     let engine = Engine::new(&config)?;
     let mut linker: Linker<MyState> = Linker::new(&engine);

@@ -13,5 +13,5 @@ scalaJSLinkerConfig ~= {
    .withWasmFeatures(
      _.withTargetPureWasm(true) // component model requires Wasm module not to import any JS stuffs.
       .withComponentModel(true)
-      .withExceptionHandling(false)) // wasmtime doesn't support exception handling yet
+      .withExceptionHandling(true)) // wasmtime 37 supports EH
 }
