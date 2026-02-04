@@ -25,6 +25,12 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Install wasm-tools
+        run: cargo install wasm-tools
+
+      - name: Install wit-bindgen
+        run: cargo install --git https://github.com/scala-wasm/wit-bindgen --branch scala
+
       - name: Build Scala WASM component
         run: sbt fastLinkJS
 
