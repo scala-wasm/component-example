@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Scala WASM component
+        run: sbt fastLinkJS
+
+      - name: Build Rust host
+        working-directory: host
+        run: cargo build --release
+
+      - name: Run component
+        working-directory: host
+        run: ./target/release/host ../target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm

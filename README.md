@@ -1,13 +1,25 @@
 # Component Model example
 
+An example of compiling Scala to WebAssembly using the [scala-wasm](https://github.com/scala-wasm/scala-wasm) compiler with Component Model support.
 
-## Publish local scala-wasm/scala-wasm
+## Build
 
-```scala
-sbt:Scala.js> ir2_12/publishLocal;linkerInterface2_12/publishLocal;linker2_12/publishLocal;testAdapter2_12/publishLocal;sbtPlugin/publishLocal;javalib/publishLocal;javalibintf/publishLocal
+Build the Scala project to generate the WASM component:
 
-sbt:Scala.js> library2_12/publishLocal;testInterface2_12/publishLocal;testBridge2_12/publishLocal;jUnitRuntime2_12/publishLocal;jUnitPlugin2_12/publishLocal
-
-sbt:Scala.js> ++2.12.20 compiler2_12/publishLocal
+```bash
+sbt fastLinkJS
 ```
 
+This generates a component at `target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm`.
+
+## Run with the Rust host
+
+Build and run the Rust host:
+
+```bash
+cd host
+cargo build --release
+./target/release/host ../target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm
+```
+
+or you can just `make run`
