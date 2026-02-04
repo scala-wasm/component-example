@@ -1,20 +1,15 @@
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Config, Engine, Store};
-use wasmtime_wasi::{WasiCtx, WasiCtxView, WasiView};
+use wasmtime_wasi::{WasiCtx, WasiCtxBuilder, WasiCtxView, WasiView};
 
-// See: https://docs.rs/wasmtime-wasi/latest/wasmtime_wasi/p2/bindings/sync/index.html
 wasmtime::component::bindgen!({
     path: "../wit",
     world: "hello-world",
-    with: {
-        "wasi": wasmtime_wasi::p2::bindings::sync,
-    },
-    require_store_data_send: true,
 });
 
 struct MyState {
-    table: ResourceTable,
     ctx: WasiCtx,
+    table: ResourceTable,
 }
 
 impl WasiView for MyState {
@@ -33,6 +28,9 @@ impl scala_wasm::component_example::name::Host for MyState {
 }
 
 fn main() -> wasmtime::Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+    let wasm_path = args.get(1).expect("Usage: host <path-to-wasm-component>");
+
     let mut config = Config::default();
     config.wasm_function_references(true);
     config.wasm_gc(true);
@@ -41,18 +39,16 @@ fn main() -> wasmtime::Result<()> {
     let engine = Engine::new(&config)?;
     let mut linker: Linker<MyState> = Linker::new(&engine);
     wasmtime_wasi::p2::add_to_linker_sync(&mut linker)?;
-    scala_wasm::component_example::name::add_to_linker::<_, HasSelf<_>>(&mut linker, |state| {
-        state
-    })?;
+    scala_wasm::component_example::name::add_to_linker::<_, HasSelf<MyState>>(&mut linker, |state| state)?;
 
-    let wasi = WasiCtx::builder().inherit_stdio().inherit_args().build();
+    let wasi = WasiCtxBuilder::new().inherit_stdio().inherit_args().build();
     let state = MyState {
-        table: ResourceTable::new(),
         ctx: wasi,
+        table: ResourceTable::new(),
     };
     let mut store = Store::new(&engine, state);
 
-    let component = Component::from_file(&engine, "../main.wasm")?;
+    let component = Component::from_file(&engine, wasm_path)?;
 
     let bindings = HelloWorld::instantiate(&mut store, &component, &linker)?;
 
