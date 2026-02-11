@@ -40,4 +40,4 @@ jobs:
 
       - name: Run component
         working-directory: host
-        run: ./target/release/host ../target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm
+        run: ./target/release/host ../target/scala-3/scala-wasm-component-example-fastopt/main.wasm

@@ -15,7 +15,7 @@ Build the Scala project to generate the WASM component:
 sbt fastLinkJS
 ```
 
-This generates a component at `target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm`.
+This generates a component at `target/scala-3.8.3-RC1-bin-SNAPSHOT/scala-wasm-component-example-fastopt/main.wasm`.
 
 ## Run with the Rust host
 
@@ -24,7 +24,7 @@ Build and run the Rust host:
 ```bash
 cd host
 cargo build --release
-./target/release/host ../target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm
+./target/release/host ../target/scala-3/scala-wasm-component-example-fastopt/main.wasm
 ```
 
 or you can just `make run`

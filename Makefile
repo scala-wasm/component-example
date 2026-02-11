@@ -1,4 +1,4 @@
-SCALA_OUT := target/scala-2.12/scala-wasm-component-example-fastopt/main.wasm
+SCALA_OUT := target/scala-3.8.3-RC1-bin-SNAPSHOT/scala-wasm-component-example-fastopt/main.wasm
 
 build-rust:
 	cd host && cargo build -r
