@@ -1,10 +1,11 @@
-SCALA_OUT := target/scala-3.8.3-RC1-bin-SNAPSHOT/scala-wasm-component-example-fastopt/main.wasm
+build-scala:
+	sbt fastLinkJS
 
 build-rust:
 	cd host && cargo build -r
 
-run: build-rust
-	cd host && cargo run -r -- ../$(SCALA_OUT)
+run: build-scala build-rust
+	cd host && cargo run -r -- ../target/scala-*/scala-wasm-component-example-fastopt/main.wasm
 
 clean:
-	rm -f $(SCALA_OUT)
+	rm -rf target host/target

@@ -31,13 +31,5 @@ jobs:
       - name: Install wit-bindgen
         run: cargo install --git https://github.com/scala-wasm/wit-bindgen --branch scala
 
-      - name: Build Scala WASM component
-        run: sbt fastLinkJS
-
-      - name: Build Rust host
-        working-directory: host
-        run: cargo build --release
-
-      - name: Run component
-        working-directory: host
-        run: ./target/release/host ../target/scala-3/scala-wasm-component-example-fastopt/main.wasm
+      - name: Build and run
+        run: make run
