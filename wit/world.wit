@@ -13,4 +13,3 @@ world hello-world {
     import name;
     export greet;
 }
-

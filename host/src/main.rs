@@ -1,6 +1,7 @@
 use wasmtime::component::{Component, HasSelf, Linker, ResourceTable};
 use wasmtime::{Config, Engine, Store};
 use wasmtime_wasi::{WasiCtx, WasiCtxBuilder, WasiCtxView, WasiView};
+use wasmtime_wasi_http::{WasiHttpCtx, WasiHttpView};
 
 wasmtime::component::bindgen!({
     path: "../wit",
@@ -10,6 +11,7 @@ wasmtime::component::bindgen!({
 struct MyState {
     ctx: WasiCtx,
     table: ResourceTable,
+    http_ctx: WasiHttpCtx,
 }
 
 impl WasiView for MyState {
@@ -18,6 +20,15 @@ impl WasiView for MyState {
             ctx: &mut self.ctx,
             table: &mut self.table,
         }
+    }
+}
+
+impl WasiHttpView for MyState {
+    fn ctx(&mut self) -> &mut WasiHttpCtx {
+        &mut self.http_ctx
+    }
+    fn table(&mut self) -> &mut ResourceTable {
+        &mut self.table
     }
 }
 
@@ -39,12 +50,14 @@ fn main() -> wasmtime::Result<()> {
     let engine = Engine::new(&config)?;
     let mut linker: Linker<MyState> = Linker::new(&engine);
     wasmtime_wasi::p2::add_to_linker_sync(&mut linker)?;
+    wasmtime_wasi_http::add_only_http_to_linker_sync(&mut linker)?;
     scala_wasm::component_example::name::add_to_linker::<_, HasSelf<MyState>>(&mut linker, |state| state)?;
 
     let wasi = WasiCtxBuilder::new().inherit_stdio().inherit_args().build();
     let state = MyState {
         ctx: wasi,
         table: ResourceTable::new(),
+        http_ctx: WasiHttpCtx::new(),
     };
     let mut store = Store::new(&engine, state);
 
