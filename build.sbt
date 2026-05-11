@@ -1,9 +1,7 @@
-resolvers += "Sonatype Central Snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
-
 name := "scala-wasm-component-example"
 version := "0.1.0-SNAPSHOT"
-scalaOrganization := "io.github.scala-wasm"
-scalaVersion := "3.8.3-RC1-wasm-bin-SNAPSHOT"
+organization := "io.github.scala-wasm"
+scalaVersion := "2.13.17"
 
 enablePlugins(ScalaJSPlugin)
 
@@ -11,10 +9,8 @@ scalaJSLinkerConfig ~= {
   _.withPrettyPrint(true) // for debugging, it's okay with false
   // For generating WebAssembly
    .withExperimentalUseWebAssembly(true)
-   .withModuleKind(ModuleKind.ESModule)
+   .withModuleKind(ModuleKind.WasmComponent)
    // For generating Component Model compatible Wasm binary
    .withWasmFeatures(
-     _.withTargetPureWasm(true) // component model requires Wasm module not to import any JS stuffs.
-      .withComponentModel(true)
-      .withWitDirectory(Some("wit"))) // for wasm-tools to tell which directory to embed
+      _.withWitDirectory(Some("wit"))) // for wasm-tools to tell which directory to embed
 }

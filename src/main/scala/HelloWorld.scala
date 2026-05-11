@@ -10,7 +10,7 @@ import scalajs.wasi.http.outgoing_handler
 @WitImplementation
 object GreetImpl extends component_example.Greet {
   def greet(): Unit = {
-    testPureWasmLibraryPaths()
+    PureWasmLibraryPathTests.run()
     println("Making an HTTP GET request to httpbin.org/get ...")
 
     // 1. Create headers
@@ -93,8 +93,10 @@ object GreetImpl extends component_example.Greet {
 
     println(s"Body:\n${bodyBuilder.toString()}")
   }
+}
 
-  private def testPureWasmLibraryPaths(): Unit = {
+private object PureWasmLibraryPathTests {
+  def run(): Unit = {
     // --- BoxesRunTime.equals (used by == on boxed types) ---
     val a: Any = 42
     val b: Any = 42
