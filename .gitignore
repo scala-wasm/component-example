@@ -7,10 +7,5 @@ target
 project/project/
 project/**/metals.sbt
 
-# Wasm and WIT deps
+# Wasm artifacts
 *.wasm
-wit/deps
-
-# Rust
-bindings.rs
-

@@ -1,15 +1,4 @@
 package scala-wasm:component-example;
 
-interface name {
-    name: func() -> string;
-}
-
-interface greet {
-    greet: func();
-}
-
-world hello-world {
-    /// currently, scala-wasm can't import inline functions :(
-    import name;
-    export greet;
+world command {
 }

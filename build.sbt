@@ -1,16 +1,30 @@
+import org.scalajs.jsenv.wasmtime.WasmtimeEnv
+
+ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / organization := "io.github.scala-wasm"
+ThisBuild / scalaVersion := "2.13.18"
+
+enablePlugins(ScalaJSPlugin, ScalaJSJUnitPlugin)
+
 name := "scala-wasm-component-example"
-version := "0.1.0-SNAPSHOT"
-organization := "io.github.scala-wasm"
-scalaVersion := "2.13.17"
 
-enablePlugins(ScalaJSPlugin)
+scalaJSUseMainModuleInitializer := true
 
-scalaJSLinkerConfig ~= {
-  _.withPrettyPrint(true) // for debugging, it's okay with false
-  // For generating WebAssembly
-   .withExperimentalUseWebAssembly(true)
-   .withModuleKind(ModuleKind.WasmComponent)
-   // For generating Component Model compatible Wasm binary
-   .withWasmFeatures(
-      _.withWitDirectory(Some("wit"))) // for wasm-tools to tell which directory to embed
+jsEnv := new WasmtimeEnv(
+  WasmtimeEnv.Config()
+    .withArgs(List(
+      "run",
+      "-W", "gc,function-references,exceptions",
+      "-S", "cli,inherit-env,inherit-network,tcp"))
+    .withEnv(envVars.value)
+)
+
+scalaJSWitDirectory := baseDirectory.value / "wit"
+scalaJSWitWorld := Some("command")
+
+scalaJSLinkerConfig := {
+  scalaJSLinkerConfig.value
+    .withPrettyPrint(true)
+    .withExperimentalUseWebAssembly(true)
+    .withModuleKind(ModuleKind.WasmComponent)
 }

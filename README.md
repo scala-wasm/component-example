@@ -1,16 +1,26 @@
-# Component Model example
+# Scala Wasm example
 
-An example of compiling Scala to WebAssembly using the [scala-wasm](https://github.com/scala-wasm/scala-wasm) compiler with Component Model support.
+An example of compiling Scala to WebAssembly using the [scala-wasm](https://github.com/scala-wasm/scala-wasm) compiler.
 
 ## Prerequisites
 
-- wasm-tools: `cargo install wasm-tools`
-- wit-bindgen: `cargo install --git https://github.com/scala-wasm/wit-bindgen --branch scala`
+- wasmtime
+- wasm-tools
+- wit-bindgen: `cargo install --git https://github.com/scala-wasm/wit-bindgen --tag scala-wasm-wasm.4`
+- sbt
 
 ## Build and Run
 
 ```bash
-make run
+sbt run
 ```
 
-This builds the Scala WASM component (`sbt fastLinkJS`), builds the Rust host, and runs the component.
+This runs the Scala Wasm program with Wasmtime.
+
+## Test
+
+```bash
+sbt test
+```
+
+This runs the app project's test target with Wasmtime.
