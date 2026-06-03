@@ -1,0 +1,6 @@
+package scala-wasm:wasi-http-client;
+
+world client {
+  import wasi:http/outgoing-handler@0.2.0;
+  export wasi:cli/run@0.2.0;
+}

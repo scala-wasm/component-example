@@ -1,0 +1,116 @@
+package wasi:http@0.2.0-rc-2023-10-18;
+
+interface types {
+  use wasi:io/streams@0.2.0-rc-2023-10-18.{input-stream, output-stream};
+  use wasi:io/poll@0.2.0-rc-2023-10-18.{pollable};
+
+  variant method {
+    get,
+    head,
+    post,
+    put,
+    delete,
+    connect,
+    options,
+    trace,
+    patch,
+    other(string),
+  }
+
+  variant scheme {
+    HTTP,
+    HTTPS,
+    other(string),
+  }
+
+  variant error {
+    invalid-url(string),
+    timeout-error(string),
+    protocol-error(string),
+    unexpected-error(string),
+  }
+
+  resource fields {
+    constructor(entries: list<tuple<string, list<u8>>>);
+    get: func(name: string) -> list<list<u8>>;
+    set: func(name: string, value: list<list<u8>>);
+    delete: func(name: string);
+    append: func(name: string, value: list<u8>);
+    entries: func() -> list<tuple<string, list<u8>>>;
+    clone: func() -> fields;
+  }
+
+  type headers = fields;
+
+  type trailers = fields;
+
+  resource incoming-request {
+    method: func() -> method;
+    path-with-query: func() -> option<string>;
+    scheme: func() -> option<scheme>;
+    authority: func() -> option<string>;
+    headers: func() -> headers;
+    consume: func() -> result<incoming-body>;
+  }
+
+  resource outgoing-request {
+    constructor(method: method, path-with-query: option<string>, scheme: option<scheme>, authority: option<string>, headers: borrow<headers>);
+    write: func() -> result<outgoing-body>;
+  }
+
+  record request-options {
+    connect-timeout-ms: option<u32>,
+    first-byte-timeout-ms: option<u32>,
+    between-bytes-timeout-ms: option<u32>,
+  }
+
+  resource response-outparam {
+    set: static func(param: response-outparam, response: result<outgoing-response, error>);
+  }
+
+  type status-code = u16;
+
+  resource incoming-response {
+    status: func() -> status-code;
+    headers: func() -> headers;
+    consume: func() -> result<incoming-body>;
+  }
+
+  resource incoming-body {
+    %stream: func() -> result<input-stream>;
+    finish: static func(this: incoming-body) -> future-trailers;
+  }
+
+  resource future-trailers {
+    subscribe: func() -> pollable;
+    get: func() -> option<result<trailers, error>>;
+  }
+
+  resource outgoing-response {
+    constructor(status-code: status-code, headers: borrow<headers>);
+    write: func() -> result<outgoing-body>;
+  }
+
+  resource outgoing-body {
+    write: func() -> result<output-stream>;
+    finish: static func(this: outgoing-body, trailers: option<trailers>);
+  }
+
+  resource future-incoming-response {
+    get: func() -> option<result<result<incoming-response, error>>>;
+    subscribe: func() -> pollable;
+  }
+}
+
+interface outgoing-handler {
+  use types.{outgoing-request, request-options, future-incoming-response, error};
+
+  handle: func(request: outgoing-request, options: option<request-options>) -> result<future-incoming-response, error>;
+}
+
+interface incoming-handler {
+  use types.{incoming-request, response-outparam};
+
+  handle: func(request: incoming-request, response-out: response-outparam);
+}
+
