@@ -31,5 +31,26 @@ jobs:
       - name: Install wit-bindgen
         run: cargo install --git https://github.com/scala-wasm/wit-bindgen --tag scala-wasm-wasm.4
 
-      - name: Build and run
-        run: sbt run test
+      - name: Install cargo-component
+        run: cargo install cargo-component --version 0.17.0
+
+      - name: Install wkg
+        run: cargo install wkg
+
+      - name: Install wac
+        run: cargo install wac-cli --locked
+
+      - name: Run helloworld
+        run: sbt helloworld/run
+
+      - name: Test helloworld
+        run: sbt helloworld/test
+
+      - name: Run WASI HTTP client
+        run: sbt wasiHttpClient/run
+
+      - name: Build Spin TODO
+        run: sbt spinTodo/fastLinkJS
+
+      - name: Run Rust + Scala composition
+        run: make -C rust-compose all
