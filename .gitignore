@@ -9,3 +9,9 @@ project/**/metals.sbt
 
 # Wasm artifacts
 *.wasm
+
+# Spin runtime state
+.spin/
+
+# cargo-component generated bindings
+bindings.rs

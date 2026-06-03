@@ -1,0 +1,19 @@
+#:schema https://schemas.spinframework.dev/spin/manifest-v2/latest.json
+
+spin_manifest_version = 2
+
+[application]
+name = "spin-todo"
+version = "0.1.0"
+description = "A scala-wasm TODO app using Spin SQLite"
+
+[[trigger.http]]
+route = "/..."
+component = "todo"
+
+[component.todo]
+source = "target/scala-2.13/spin-todo-fastopt/main.wasm"
+sqlite_databases = ["default"]
+
+[component.todo.build]
+command = "cd .. && sbt --client spinTodo/fastLinkJS"

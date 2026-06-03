@@ -22,14 +22,31 @@ jobs:
       - name: Set up sbt
         uses: sbt/setup-sbt@v1
 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Install wasm-tools
-        run: cargo install wasm-tools
+      - name: Set up Rust and WebAssembly tools
+        uses: taiki-e/install-action@v2
+        with:
+          tool: |
+            rust
+            wasm-tools
+            wasmtime
+            cargo-component@0.17.0
+            wkg
+            wac-cli
 
       - name: Install wit-bindgen
         run: cargo install --git https://github.com/scala-wasm/wit-bindgen --tag scala-wasm-wasm.4
 
-      - name: Build and run
-        run: sbt run test
+      - name: Run helloworld
+        run: sbt helloworld/run
+
+      - name: Test helloworld
+        run: sbt helloworld/test
+
+      - name: Run WASI HTTP client
+        run: sbt wasiHttpClient/run
+
+      - name: Build Spin TODO
+        run: sbt spinTodo/fastLinkJS
+
+      - name: Run Rust + Scala composition
+        run: make -C rust-compose all
