@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 ferris-says = "0.3.2"
-wit-bindgen-rt = { version = "0.39.0", features = ["bitflags"] }
+wit-bindgen-rt = { version = "0.44.0", features = ["bitflags"] }
 
 [lib]
 crate-type = ["cdylib"]
