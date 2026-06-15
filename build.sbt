@@ -2,7 +2,7 @@ import org.scalajs.jsenv.wasmtime.WasmtimeEnv
 
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "io.github.scala-wasm"
-ThisBuild / scalaVersion := "2.13.18"
+ThisBuild / scalaVersion := "3.8.4"
 
 lazy val componentSettings = Seq(
   // We use wasmEnv instead of jsEnv for WasmComponent, but in future, we might want to switch back to jsEnv
