@@ -1,30 +1,36 @@
 import org.scalajs.jsenv.wasmtime.WasmtimeEnv
+import org.scalajs.linker.interface.ESVersion
 
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "io.github.scala-wasm"
 ThisBuild / scalaVersion := "2.13.18"
 
 lazy val componentSettings = Seq(
-  // We use wasmEnv instead of jsEnv for WasmComponent, but in future, we might want to switch back to jsEnv
-  wasmEnv := new WasmtimeEnv(
-    WasmtimeEnv.Config()
-      .withArgs(List(
-        "run",
-        "-W", "gc,function-references,exceptions",
-        "-S", "cli=y",
-        "-S", "inherit-env=y",
-        "-S", "inherit-network=y",
-        "-S", "tcp=y",
-        "-S", "http"))
-      .withEnv(envVars.value)
-  ),
+  wasmEnv := Def.uncached {
+    new WasmtimeEnv(
+      WasmtimeEnv.Config()
+        .withArgs(List(
+          "run",
+          "-W", "gc,function-references,exceptions",
+          "-S", "cli",
+          "-S", "inherit-env",
+          "-S", "inherit-network",
+          "-S", "tcp",
+          "-S", "http"))
+        .withEnv(envVars.value)
+      )
+  },
   scalaJSWitDirectory := baseDirectory.value / "wit",
   Compile / scalaJSLinkerConfig := {
     val witDir = scalaJSWitDirectory.value
     val witWorld = scalaJSWitWorld.value
     (Compile / scalaJSLinkerConfig).value
       .withPrettyPrint(true)
-      .withExperimentalUseWebAssembly(true)
+      .withESFeatures { features =>
+        features
+          .withUseWebAssembly(true)
+          .withESVersion(ESVersion.ES2022)
+      }
       .withModuleKind(ModuleKind.WasmComponent)
       .withWasmFeatures { features =>
         features // in future, plugin should automatically set these settings
@@ -62,7 +68,7 @@ lazy val spinTodo = project
     name := "spin-todo",
     moduleName := "spin-todo",
     resolvers += "Sonatype Central Snapshots" at "https://central.sonatype.com/repository/maven-snapshots/",
-    libraryDependencies += "org.typelevel" %%% "jawn-ast" % "1.6.0-240-05f7211-SNAPSHOT",
+    libraryDependencies += "org.typelevel" %% "jawn-ast" % "1.6.0-240-05f7211-SNAPSHOT",
     scalaJSWitWorld := Some("todo"),
     scalaJSWitPackage := Some("spintodo")
   )
