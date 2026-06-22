@@ -1,4 +1,4 @@
-SCALA_MODULE := scala/target/scala-2.13/rust-compose-scala-fastopt/main.wasm
+SCALA_MODULE := ../target/out/sjs1/scala-2.13.18/rust-compose-scala/rust-compose-scala-fastopt/main.wasm
 RUST_MODULE := rust-greeter/target/wasm32-wasip1/release/rust_greeter.wasm
 OUT := out.wasm
 

@@ -12,7 +12,7 @@ route = "/..."
 component = "todo"
 
 [component.todo]
-source = "target/scala-2.13/spin-todo-fastopt/main.wasm"
+source = "../target/out/sjs1/scala-2.13.18/spin-todo/spin-todo-fastopt/main.wasm"
 sqlite_databases = ["default"]
 
 [component.todo.build]

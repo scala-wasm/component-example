@@ -6,18 +6,20 @@ ThisBuild / organization := "io.github.scala-wasm"
 ThisBuild / scalaVersion := "2.13.18"
 
 lazy val componentSettings = Seq(
-  wasmEnv := new WasmtimeEnv(
-    WasmtimeEnv.Config()
-      .withArgs(List(
-        "run",
-        "-W", "gc,function-references,exceptions",
-        "-S", "cli",
-        "-S", "inherit-env",
-        "-S", "inherit-network",
-        "-S", "tcp",
-        "-S", "http"))
-      .withEnv(envVars.value)
-  ),
+  wasmEnv := Def.uncached {
+    new WasmtimeEnv(
+      WasmtimeEnv.Config()
+        .withArgs(List(
+          "run",
+          "-W", "gc,function-references,exceptions",
+          "-S", "cli",
+          "-S", "inherit-env",
+          "-S", "inherit-network",
+          "-S", "tcp",
+          "-S", "http"))
+        .withEnv(envVars.value)
+      )
+  },
   scalaJSWitDirectory := baseDirectory.value / "wit",
   Compile / scalaJSLinkerConfig := {
     val witDir = scalaJSWitDirectory.value
@@ -66,7 +68,7 @@ lazy val spinTodo = project
     name := "spin-todo",
     moduleName := "spin-todo",
     resolvers += "Sonatype Central Snapshots" at "https://central.sonatype.com/repository/maven-snapshots/",
-    libraryDependencies += "org.typelevel" %%% "jawn-ast" % "1.6.0-240-05f7211-SNAPSHOT",
+    libraryDependencies += "org.typelevel" %% "jawn-ast" % "1.6.0-240-05f7211-SNAPSHOT",
     scalaJSWitWorld := Some("todo"),
     scalaJSWitPackage := Some("spintodo")
   )
