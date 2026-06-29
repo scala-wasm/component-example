@@ -3,7 +3,7 @@ import org.scalajs.linker.interface.ESVersion
 
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "io.github.scala-wasm"
-ThisBuild / scalaVersion := "2.13.18"
+ThisBuild / scalaVersion := "3.8.4"
 
 lazy val componentSettings = Seq(
   wasmEnv := Def.uncached {
@@ -68,7 +68,7 @@ lazy val spinTodo = project
     name := "spin-todo",
     moduleName := "spin-todo",
     resolvers += "Sonatype Central Snapshots" at "https://central.sonatype.com/repository/maven-snapshots/",
-    libraryDependencies += "org.typelevel" %% "jawn-ast" % "1.6.0-240-05f7211-SNAPSHOT",
+    libraryDependencies += "org.typelevel" %% "jawn-ast" % "1.7.0",
     scalaJSWitWorld := Some("todo"),
     scalaJSWitPackage := Some("spintodo")
   )
